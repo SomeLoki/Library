@@ -4,14 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./style.css">
-  <script src="./script.js"></script>
   <title>Library</title>
 </head>
 <body>
-  <div class="bookshelf">
+  <button class="new-book">New Book</button>
+  <div class="bookshelf"></div>
 
-    
-  </div>
-  
+  <dialog>
+    <form id="new-book-modal">
+      <formset>
+        <label for="book-title" autofocus>Title:*</label>
+        <input type="text" id="book-title" name="book-title" placeholder="The Gospel According to Larry" required>
+        <label for="book-author">Author:*</label>
+        <input type="text" id="book-author" name="book-author" placeholder="Janet Tashijan" required>
+        <label for="book-pages">Page Count:*</label>
+        <input type="number" id="book-pages" name="book-pages" placeholder="227" required>
+        <label for="book-read">Have you read this book?*</label>
+        <input type="checkbox" id="book-read" name="book-read"  required>
+        
+      </formset>
+
+
+    </form>
+
+    <button class="add-book" form="new-book-modal">Add Book</button>
+    <button class="cancel">Cancel</button>
+  </dialog>
+  <script src="./script.js"></script>
 </body>
 </html>
