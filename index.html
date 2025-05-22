@@ -10,7 +10,7 @@
   <button class="new-book">New Book</button>
   <div class="bookshelf"></div>
 
-  <dialog>
+  <dialog id="new-book-dialog">
     <form id="new-book-modal">
       <formset>
         <label for="book-title" autofocus>Title:*</label>
@@ -19,15 +19,15 @@
         <input type="text" id="book-author" name="book-author" placeholder="Janet Tashijan" required>
         <label for="book-pages">Page Count:*</label>
         <input type="number" id="book-pages" name="book-pages" placeholder="227" required>
-        <label for="book-read">Have you read this book?*</label>
-        <input type="checkbox" id="book-read" name="book-read"  required>
+        <label for="book-read">Have you read this book?</label>
+        <input type="checkbox" id="book-read" name="book-read">
         
       </formset>
 
 
     </form>
 
-    <button class="add-book" form="new-book-modal">Add Book</button>
+    <button type="submit" class="add-book" form="new-book-modal">Add Book</button>
     <button class="cancel">Cancel</button>
   </dialog>
   <script src="./script.js"></script>
