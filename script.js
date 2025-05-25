@@ -9,31 +9,21 @@ function Book(title, author, pages, read) {
   this.pages = pages;
   this.read = read;
   this.id = crypto.randomUUID();
+  this.favorite = false;
 }
-
-// use this later for creating buttons
-/* function Book(title, author, pages, read) {
-  if (!new.target) {
-    throw Error("You must use the 'new' operator to call this constructor");
-  }
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-  this.id = crypto.randomUUID();
-} */
 
 Book.prototype.info = function() {
   return `${this.title} by ${this.author}, ${this.pages} pages, ` + (this.read ? "have read" : "have not read yet");
 };
 
+Book.prototype.createBookElement = function(){
+  createElement( "div", "bookInfo", this.info(), ".book-card", this.id);
+}
+
 const createElement = function( element, elementClass, textContent, appendTo, associateBook) {
   const elem = document.createElement(element);
   // this is to always select the last book-card
   const parent = document.querySelector(`${appendTo}:last-of-type`);
-  if (!textContent) {
-    textContent = "";
-  }
   if (elementClass) {
     elem.classList.add(elementClass);
   }
@@ -44,28 +34,93 @@ const createElement = function( element, elementClass, textContent, appendTo, as
   parent.appendChild(elem);
 }
 
+function displayLibrary() {
+  for ( const book in myLibrary) {
+    // check if the book already is displayed
+    const currentBook = myLibrary[book];
+    const elem = document.querySelector(`[data-related-book="${currentBook.id}"]`)
+    if (elem) {
+      continue
+    }
+    createBookCard(currentBook.id);
+    currentBook.createBookElement();
+    createRemoveButton(currentBook.id);
+    createFavButton(currentBook.id);
+  }
+}
+
 function addBookToLibrary( title, author, pages, read) {
   const newBook = new Book( title, author, pages, read);
   myLibrary.push(newBook);
+  displayLibrary();
 };
 
 function displayLibrary() {
   for ( const book in myLibrary) {
-  
-    createBookCard(myLibrary[book].id);
-    createElement( "div", "", myLibrary[book].info(), ".book-card", myLibrary[book].id);
+    // check if the book already is displayed
+    const currentBook = myLibrary[book];
+    const elem = document.querySelector(`[data-related-book="${currentBook.id}"]`)
+    if (elem) {
+      continue
+    }
+    createBookCard(currentBook.id);
+    currentBook.createBookElement();
+    createRemoveButton(currentBook.id);
+    createRemoveListener(currentBook.id);
+    createFavButton(currentBook.id);
+    createFavListener(currentBook.id);
   }
-}
-
-function removeBook(bookToRemove) {
-  const removeList = document.querySelectorAll(`[data-related-book="${bookToRemove}"]`);
-  for (let element of removeList) {
-    element.remove();
-}
 }
 
 function createBookCard(associateBook) {
   createElement( "div", "book-card", "", ".bookshelf", associateBook)
+}
+
+function createRemoveButton(associateBook) {
+  createElement( "button", "removeButton", "Remove Book", ".book-card", associateBook)
+}
+
+function createRemoveListener(associateBook) {
+  const removeButton = document.querySelector(`.removeButton[data-related-book="${associateBook}"]`);
+  removeButton.addEventListener("click", () => {
+      removeBookFromArray(associateBook)
+    })
+}
+
+function createFavListener(associateBook) {
+  const favButton = document.querySelector(`.favButton[data-related-book="${associateBook}"]`);
+  favButton.addEventListener("click", () => {
+      const index = findBookInArray(associateBook);
+      const book = myLibrary[index];
+      book.favorite = (!book.favorite);
+    })
+}
+
+function createFavButton(associateBook) {
+  createElement( "button", "favButton", "PLACEHOLDER", ".book-card", associateBook)
+}
+
+function removeBookFromArray(bookIdToRemove) {
+  const index = findBookInArray(bookIdToRemove);
+  if (index === -1) {
+    console.log(`${bookIdToRemove} was not found in myLibrary`);
+    return;
+  }
+  myLibrary.splice(index, 1);
+  removeBookFromDisplay(bookIdToRemove)
+}
+
+function findBookInArray(bookId) {
+  // UUID should be unique to each book
+  const bookToFind = (book) => book.id === bookId;
+  return myLibrary.findIndex(bookToFind);
+}
+
+function removeBookFromDisplay(bookIdToRemove) {
+  const removeList = document.querySelectorAll(`[data-related-book="${bookIdToRemove}"]`);
+  for (let element of removeList) {
+    element.remove();
+  }
 }
 
 // these are tests to remove later
@@ -90,16 +145,20 @@ cancelButton.addEventListener("click", () => {
 });
 
 addNewButton.addEventListener("click", (e) => {
- const title = document.querySelector(`#book-title`).value
- const author = document.querySelector(`#book-author`).value
- const pages = document.querySelector(`#book-pages`).value
- const read = document.querySelector(`#book-read`).value
- if (!title || !author || !pages) {
+ const title = document.querySelector(`#book-title`)
+ const author = document.querySelector(`#book-author`)
+ const pages = document.querySelector(`#book-pages`)
+ const read = document.querySelector(`#book-read`)
+ if (!title.value || !author.value || !pages.value) {
   return;
  }
-  addBookToLibrary( title, author, pages, read);
+  addBookToLibrary( title.value, author.value, pages.value, read.checked);
   newBookDialog.close();
   e.preventDefault();
+ title.value = "";
+ author.value = "";
+ pages.value = "";
+ read.checked = false;
 });
 
 displayLibrary()
