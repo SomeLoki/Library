@@ -71,14 +71,14 @@ function createRemoveButton(bookId) {
 function createRemoveListener(bookId) {
   const removeButton = document.querySelector(`.removeButton[data-related-book="${bookId}"]`);
   removeButton.addEventListener("click", () => {
-      removeBookFromArray(bookId)
+      removeBookFromLibrary(bookId)
     })
 }
 
 function createReadListener(bookId) {
   const readButton = document.querySelector(`.readButton[data-related-book="${bookId}"]`);
   readButton.addEventListener("click", () => {
-      const index = findBookInArray(bookId);
+      const index = findBookInLibrary(bookId);
       const book = myLibrary[index];
       book.read = (!book.read);
       book.updateBookDisplay();
@@ -92,14 +92,14 @@ function createReadButton(bookId) {
 }
 
 function checkReadStatus(bookId) {
-  const index = findBookInArray(bookId);
+  const index = findBookInLibrary(bookId);
   const book = myLibrary[index];
   return (book.read) ? "Mark as unread" : "Mark as read";
 }
 
 
-function removeBookFromArray(bookIdToRemove) {
-  const index = findBookInArray(bookIdToRemove);
+function removeBookFromLibrary(bookIdToRemove) {
+  const index = findBookInLibrary(bookIdToRemove);
   if (index === -1) {
     console.log(`${bookIdToRemove} was not found in myLibrary`);
     return;
@@ -108,7 +108,7 @@ function removeBookFromArray(bookIdToRemove) {
   removeBookFromDisplay(bookIdToRemove)
 }
 
-function findBookInArray(bookId) {
+function findBookInLibrary(bookId) {
   // UUID should be unique to each book
   const bookToFind = (book) => book.id === bookId;
   return myLibrary.findIndex(bookToFind);
@@ -147,6 +147,8 @@ addNewButton.addEventListener("click", (e) => {
  const author = document.querySelector(`#book-author`)
  const pages = document.querySelector(`#book-pages`)
  const read = document.querySelector(`#book-read`)
+
+// must do this check as .preventDefault() will bypass required if returned here. Returning here displays the correct errors.
  if (!title.value || !author.value || !pages.value) {
   return;
  }
