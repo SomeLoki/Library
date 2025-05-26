@@ -9,7 +9,6 @@ function Book(title, author, pages, read) {
   this.pages = pages;
   this.read = read;
   this.id = crypto.randomUUID();
-  this.favorite = false;
 }
 
 Book.prototype.info = function() {
@@ -26,17 +25,17 @@ Book.prototype.updateBookDisplay = function(){
 }
 
 const createDomElement = function( element, elementClass, textContent, appendTo, bookId) {
-  const elem = document.createElement(element);
+  const newElement = document.createElement(element);
   // this is to always select the last book-card
   const parent = document.querySelector(`${appendTo}:last-of-type`);
   if (elementClass) {
-    elem.classList.add(elementClass);
+    newElement.classList.add(elementClass);
   }
   if (bookId) {
-    elem.setAttribute("data-related-book", bookId);
+    newElement.setAttribute("data-related-book", bookId);
   }
-  elem.textContent = textContent;
-  parent.appendChild(elem);
+  newElement.textContent = textContent;
+  parent.appendChild(newElement);
 }
 
 function addBookToLibrary( title, author, pages, read) {
