@@ -17,36 +17,26 @@ Book.prototype.info = function() {
 };
 
 Book.prototype.createBookElement = function(){
-  createElement( "div", "bookInfo", this.info(), ".book-card", this.id);
+  createDomElement( "div", "bookInfo", this.info(), ".book-card", this.id);
 }
 
-const createElement = function( element, elementClass, textContent, appendTo, associateBook) {
+Book.prototype.updateBookDisplay = function(){
+  const element = document.querySelector(`.bookInfo[data-related-book="${this.id}"]`);
+  element.textContent = this.info();
+}
+
+const createDomElement = function( element, elementClass, textContent, appendTo, bookId) {
   const elem = document.createElement(element);
   // this is to always select the last book-card
   const parent = document.querySelector(`${appendTo}:last-of-type`);
   if (elementClass) {
     elem.classList.add(elementClass);
   }
-  if (associateBook) {
-    elem.setAttribute("data-related-book", associateBook);
+  if (bookId) {
+    elem.setAttribute("data-related-book", bookId);
   }
   elem.textContent = textContent;
   parent.appendChild(elem);
-}
-
-function displayLibrary() {
-  for ( const book in myLibrary) {
-    // check if the book already is displayed
-    const currentBook = myLibrary[book];
-    const elem = document.querySelector(`[data-related-book="${currentBook.id}"]`)
-    if (elem) {
-      continue
-    }
-    createBookCard(currentBook.id);
-    currentBook.createBookElement();
-    createRemoveButton(currentBook.id);
-    createFavButton(currentBook.id);
-  }
 }
 
 function addBookToLibrary( title, author, pages, read) {
@@ -56,49 +46,58 @@ function addBookToLibrary( title, author, pages, read) {
 };
 
 function displayLibrary() {
-  for ( const book in myLibrary) {
+  for ( const book of myLibrary) {
     // check if the book already is displayed
-    const currentBook = myLibrary[book];
-    const elem = document.querySelector(`[data-related-book="${currentBook.id}"]`)
-    if (elem) {
+    const element = document.querySelector(`[data-related-book="${book.id}"]`)
+    if (element) {
       continue
     }
-    createBookCard(currentBook.id);
-    currentBook.createBookElement();
-    createRemoveButton(currentBook.id);
-    createRemoveListener(currentBook.id);
-    createFavButton(currentBook.id);
-    createFavListener(currentBook.id);
+    createBookCard(book.id);
+    book.createBookElement();
+    createRemoveButton(book.id);
+    createRemoveListener(book.id);
+    createReadButton(book.id);
+    createReadListener(book.id);
   }
 }
 
-function createBookCard(associateBook) {
-  createElement( "div", "book-card", "", ".bookshelf", associateBook)
+function createBookCard(bookId) {
+  createDomElement( "div", "book-card", "", ".bookshelf", bookId)
 }
 
-function createRemoveButton(associateBook) {
-  createElement( "button", "removeButton", "Remove Book", ".book-card", associateBook)
+function createRemoveButton(bookId) {
+  createDomElement( "button", "removeButton", "Remove Book", ".book-card", bookId)
 }
 
-function createRemoveListener(associateBook) {
-  const removeButton = document.querySelector(`.removeButton[data-related-book="${associateBook}"]`);
+function createRemoveListener(bookId) {
+  const removeButton = document.querySelector(`.removeButton[data-related-book="${bookId}"]`);
   removeButton.addEventListener("click", () => {
-      removeBookFromArray(associateBook)
+      removeBookFromArray(bookId)
     })
 }
 
-function createFavListener(associateBook) {
-  const favButton = document.querySelector(`.favButton[data-related-book="${associateBook}"]`);
-  favButton.addEventListener("click", () => {
-      const index = findBookInArray(associateBook);
+function createReadListener(bookId) {
+  const readButton = document.querySelector(`.readButton[data-related-book="${bookId}"]`);
+  readButton.addEventListener("click", () => {
+      const index = findBookInArray(bookId);
       const book = myLibrary[index];
-      book.favorite = (!book.favorite);
+      book.read = (!book.read);
+      book.updateBookDisplay();
+      readButton.textContent = checkReadStatus(bookId);
     })
 }
 
-function createFavButton(associateBook) {
-  createElement( "button", "favButton", "PLACEHOLDER", ".book-card", associateBook)
+function createReadButton(bookId) {
+  const readStatus = checkReadStatus(bookId);
+  createDomElement( "button", "readButton", readStatus, ".book-card", bookId)
 }
+
+function checkReadStatus(bookId) {
+  const index = findBookInArray(bookId);
+  const book = myLibrary[index];
+  return (book.read) ? "Mark as unread" : "Mark as read";
+}
+
 
 function removeBookFromArray(bookIdToRemove) {
   const index = findBookInArray(bookIdToRemove);
