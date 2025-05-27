@@ -121,11 +121,11 @@ function removeBookFromDisplay(bookIdToRemove) {
   }
 }
 
-// these are tests to remove later
-const theHobbit = addBookToLibrary("The Hobbit", "J.R.R Tolkien", 295, false);
-const the = addBookToLibrary("The ", "J.R.R Tolkien", 295, false);
-const hobbit = addBookToLibrary("Hobbit", "J.R.R Tolkien", 295, false);
-const obbit = addBookToLibrary("The test", "J.R.R Tolkien", 295, false);
+// these are just filler books to display something
+const intoTheWoods = addBookToLibrary("Into the Woods", "Stephen Sondheim", 138, false);
+const nineteenEightyFour = addBookToLibrary("1984", "George Orwell", 328, false);
+const artemisFowl = addBookToLibrary("Artemis Fowl", "Eoin Colfer", 277, false);
+const holes = addBookToLibrary("Holes", "Louis Sachar", 233, false);
 
 const newBookDialog = document.querySelector("dialog");
 const startNewButton = document.querySelector(".new-book");
