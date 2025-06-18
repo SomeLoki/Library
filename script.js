@@ -1,27 +1,27 @@
 const myLibrary = [];
 
-function Book(title, author, pages, read) {
-  if (!new.target) {
-    throw Error("You must use the 'new' operator to call this constructor");
-  }
+class Book {
+
+  constructor(title, author, pages, read){
   this.title = title;
   this.author = author;
   this.pages = pages;
   this.read = read;
   this.id = crypto.randomUUID();
-}
+  }
 
-Book.prototype.info = function() {
+  info = function() {
   return `${this.title} by ${this.author}, ${this.pages} pages, ` + (this.read ? "have read" : "have not read yet");
-};
+  };
 
-Book.prototype.createBookElement = function(){
+  createBookElement = function(){
   createDomElement( "div", "bookInfo", this.info(), ".book-card", this.id);
-}
+  }
 
-Book.prototype.updateBookDisplay = function(){
+  updateBookDisplay = function(){
   const element = document.querySelector(`.bookInfo[data-related-book="${this.id}"]`);
   element.textContent = this.info();
+  }
 }
 
 const createDomElement = function( element, elementClass, textContent, appendTo, bookId) {
